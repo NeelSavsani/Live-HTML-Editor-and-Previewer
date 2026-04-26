@@ -7,12 +7,13 @@
     box-sizing: border-box;
 }
 
-:root{
+:root {
     --bg-main: #10455b;
     --bg-panel: #0c2f3f;
     --bg-editor: #0a1f2b;
     --bg-label: #08202b;
-    --accent: #00c2d1;
+    /* --accent: #00c2d1; */
+    --accent: #fff;
     --accent-hover: #00e0f0;
     --text-main: #e6f7ff;
     --text-muted: #9fbcc7;
@@ -41,7 +42,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    background: var(--bg-panel);
+    /* background: var(--bg-panel); */
 }
 
 /* TEXTAREAS */
@@ -56,7 +57,6 @@ textarea {
     outline: none;
     font-size: 16px;
     resize: none;
-    border: 1px solid var(--border);
 }
 
 /* OUTPUT */
@@ -82,9 +82,21 @@ label i {
     margin: 0 8px;
 }
 
-.fa-html5 { color: #e44d26; }
-.fa-css3-alt { color: #264de4; }
-.fa-js { color: #f7df1e; }
+.fa-html5 {
+    color: #e44d26;
+}
+
+.fa-css3-alt {
+    color: #264de4;
+}
+
+.fa-js {
+    color: #c4b019;
+}
+
+.fa-play {
+    color: rgb(67, 177, 67);
+}
 
 /* FOOTER */
 footer {
@@ -155,40 +167,103 @@ footer {
 
 /* Tablet */
 @media (max-width: 900px) {
+
+    /* FULL SCREEN LAYOUT */
     .container {
         flex-direction: column;
-        height: auto;
+        height: 100vh;
+        /* same as 600px */
+        padding: 8px;
+        gap: 6px;
     }
 
     .left,
     .right {
         width: 100%;
+        flex: 1;
+        gap: 6px;
+    }
+
+    /* Proper flex scaling */
+    .left textarea,
+    .right iframe {
+        flex: 1;
+        min-height: 0;
+        /* IMPORTANT */
+    }
+
+    /* 3 editors + 1 output */
+    .left {
+        flex: 3;
+    }
+
+    .right {
+        flex: 1;
+    }
+
+    /* Adjust sizes */
+    textarea {
+        font-size: 15px;
+    }
+
+    label {
+        font-size: 14px;
+        padding: 5px 10px;
     }
 
     iframe {
-        height: 300px;
+        min-height: 0;
     }
 }
 
 /* Mobile */
 @media (max-width: 600px) {
-    textarea {
-        font-size: 14px;
+
+    /* FULL SCREEN LAYOUT */
+    .container {
+        flex-direction: column;
+        height: 100vh;
+        padding: 5px;
+        gap: 5px;
     }
 
-    label {
+    .left,
+    .right {
+        width: 100%;
+        flex: 1;
+        gap: 5px;
+    }
+
+    /* EACH BLOCK (label + textarea / iframe) */
+    .left textarea,
+    .right iframe {
+        flex: 1;
+        min-height: 0;
+        /* IMPORTANT: prevents overflow issues */
+    }
+
+    /* Make 4 equal parts */
+    .left {
+        flex: 3;
+        /* 3 editors */
+    }
+
+    .right {
+        flex: 1;
+        /* output */
+    }
+
+    /* Smaller UI */
+    textarea {
         font-size: 13px;
     }
 
-    iframe {
-        height: 250px;
-    }
-
-    .footer p {
+    label {
         font-size: 12px;
+        padding: 4px 8px;
     }
 
-    .socials a {
-        font-size: 14px;
+    iframe {
+        min-height: 0;
     }
 }
