@@ -1,43 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Live Code Editor</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/e05d24f6c7.js" crossorigin="anonymous"></script>
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://kit.fontawesome.com/e05d24f6c7.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
     <div class="container">
-        <div class="left">
-            <label><i class="fa-brands fa-html5"></i> HTML</label>
-            <textarea name="html-code" id="html-code" onkeyup="run()"></textarea>
-            <label><i class="fa-brands fa-css3-alt"></i> CSS</label>
-            <textarea name="css-code" id="css-code" onkeyup="run()"></textarea>
-            <label><i class="fa-brands fa-js"></i> JavaScript</label>
-            <textarea name="js-code" id="js-code" onkeyup="run()"></textarea>
-        </div>
-        <div class="right">
-            <label>Output <i class="fa-solid fa-play"></i></label>
-            <iframe id="output"></iframe>
-        </div>
+      <div class="left">
+        <label><i class="fa-brands fa-html5"></i> HTML</label>
+        <textarea name="html-code" id="html-code" onkeyup="run()"></textarea>
+        <label><i class="fa-brands fa-css3-alt"></i> CSS</label>
+        <textarea name="css-code" id="css-code" onkeyup="run()"></textarea>
+        <label><i class="fa-brands fa-js"></i> JavaScript</label>
+        <textarea name="js-code" id="js-code" onkeyup="run()"></textarea>
+      </div>
+      <div class="right">
+        <label>Output <i class="fa-solid fa-play"></i></label>
+        <iframe id="output"></iframe>
+      </div>
     </div>
 
-    <footer>
-        Made with <i class="fa-solid fa-heart"> by <a href="https://neelsavsani.vercel.app" target="_blank">MasterEagle</a></i>
+    <footer class="footer">
+      <div class="footer-content">
+        <p>© 2026 Live Code Editor</p>
+
+        <p class="made-by">
+          Made with <i class="fa-solid fa-heart"></i> by
+          <a href="https://neelsavsani.vercel.app" target="_blank"
+            >Neel Savsani</a
+          >
+        </p>
+
+        <div class="socials">
+          <a href="https://github.com/NeelSavsani"><i class="fa-brands fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/neel-savsani"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="mailto:neelsavsani7@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+      </div>
     </footer>
 
     <script>
-        function run(){
-            let htmlCode = document.querySelector("#html-code").value;
-            let cssCode = document.querySelector("#css-code").value;
-            let jsCode = document.querySelector("#js-code").value;
-            let output = document.querySelector("#output");
+      function run() {
+        let htmlCode = document.querySelector("#html-code").value;
+        let cssCode = document.querySelector("#css-code").value;
+        let jsCode = document.querySelector("#js-code").value;
+        let output = document.querySelector("#output");
 
-            output.contentDocument.body.innerHTML = htmlCode + "<style>" + cssCode + "</style>";
-            output.contentWindow.eval(jsCode);
-        }
+        output.contentDocument.body.innerHTML =
+          htmlCode + "<style>" + cssCode + "</style>";
+        output.contentWindow.eval(jsCode);
+      }
     </script>
-
-</body>
+  </body>
 </html>
