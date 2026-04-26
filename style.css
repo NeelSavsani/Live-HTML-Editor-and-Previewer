@@ -12,7 +12,6 @@
     --bg-panel: #0c2f3f;
     --bg-editor: #0a1f2b;
     --bg-label: #08202b;
-    /* --accent: #00c2d1; */
     --accent: #fff;
     --accent-hover: #00e0f0;
     --text-main: #e6f7ff;
@@ -42,27 +41,28 @@ body {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    /* background: var(--bg-panel); */
+    height: 100%;
+    /* 🔥 required */
 }
 
-/* TEXTAREAS */
-textarea {
-    width: 100%;
+/* MONACO EDITORS */
+.editor-box {
     flex: 1;
-    min-height: 100px;
-    background: var(--bg-editor);
-    color: var(--text-main);
-    padding: 10px;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    resize: none;
+    min-height: 0;
+    /* 🔥 critical */
+    height: 100%;
+    /* 🔥 required */
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
 }
 
 /* OUTPUT */
 iframe {
     width: 100%;
     flex: 1;
+    min-height: 0;
+    /* 🔥 important */
     background: #fff;
     border: none;
     border-radius: 6px;
@@ -74,15 +74,16 @@ label {
     align-items: center;
     background: var(--bg-label);
     color: var(--accent);
-    padding: 5px 10px;
-    font-size: 18px;
-    margin-top: 2px;
+    padding: 6px 10px;
+    font-size: 16px;
+    border-radius: 4px;
 }
 
 label i {
     margin: 0 8px;
 }
 
+/* ICON COLORS */
 .fa-html5 {
     color: #e44d26;
 }
@@ -121,7 +122,7 @@ footer {
 }
 
 .footer a {
-    color: var(--accent);
+    color: #00c2d1;
     text-decoration: none;
     font-weight: 500;
 }
@@ -152,48 +153,7 @@ footer {
     transform: translateY(-2px);
 }
 
-/* EDITOR WRAPPER */
-.editor {
-    display: flex;
-    background: var(--bg-editor);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.left .editor{
-    flex: 1;
-    min-height: 0;
-}
-
-/* LINE NUMBERS */
-.line-numbers {
-    width: 40px;
-    background: #081821;
-    color: #6fa3b8;
-    text-align: right;
-    padding: 10px 5px;
-    font-family: monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    user-select: none;
-    overflow: hidden;
-}
-
-/* TEXTAREA */
-.editor textarea {
-    flex: 1;
-    border: none;
-    outline: none;
-    resize: none;
-    background: transparent;
-    color: var(--text-main);
-    padding: 10px;
-    font-family: monospace;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
+/* HEART ANIMATION */
 @keyframes heartbeat {
 
     0%,
@@ -208,34 +168,21 @@ footer {
 
 /* ---------------- RESPONSIVE ---------------- */
 
-/* Tablet */
+/* TABLET */
 @media (max-width: 900px) {
 
-    /* FULL SCREEN LAYOUT */
     .container {
         flex-direction: column;
         height: 100vh;
-        /* same as 600px */
         padding: 8px;
         gap: 6px;
     }
 
     .left,
     .right {
-        width: 100%;
         flex: 1;
-        gap: 6px;
     }
 
-    /* Proper flex scaling */
-    .left textarea,
-    .right iframe {
-        flex: 1;
-        min-height: 0;
-        /* IMPORTANT */
-    }
-
-    /* 3 editors + 1 output */
     .left {
         flex: 3;
     }
@@ -244,25 +191,19 @@ footer {
         flex: 1;
     }
 
-    /* Adjust sizes */
-    textarea {
-        font-size: 15px;
+    .editor-box,
+    iframe {
+        min-height: 0;
     }
 
     label {
         font-size: 14px;
-        padding: 5px 10px;
-    }
-
-    iframe {
-        min-height: 0;
     }
 }
 
-/* Mobile */
+/* MOBILE */
 @media (max-width: 600px) {
 
-    /* FULL SCREEN LAYOUT */
     .container {
         flex-direction: column;
         height: 100vh;
@@ -272,41 +213,24 @@ footer {
 
     .left,
     .right {
-        width: 100%;
         flex: 1;
-        gap: 5px;
     }
 
-    /* EACH BLOCK (label + textarea / iframe) */
-    .left textarea,
-    .right iframe {
-        flex: 1;
-        min-height: 0;
-        /* IMPORTANT: prevents overflow issues */
-    }
-
-    /* Make 4 equal parts */
     .left {
         flex: 3;
-        /* 3 editors */
     }
 
     .right {
         flex: 1;
-        /* output */
     }
 
-    /* Smaller UI */
-    textarea {
-        font-size: 13px;
+    .editor-box,
+    iframe {
+        min-height: 0;
     }
 
     label {
         font-size: 12px;
         padding: 4px 8px;
-    }
-
-    iframe {
-        min-height: 0;
     }
 }
