@@ -93,6 +93,7 @@
       });
 
       require(["vs/editor/editor.main"], function () {
+        // ✅ HTML CONFIG (clean)
         monaco.languages.html.htmlDefaults.setOptions({
           format: {
             tabSize: 2,
@@ -101,9 +102,9 @@
           suggest: {
             html5: true,
           },
-          autoClosingTags: true,
         });
 
+        // 🔥 HTML EDITOR
         window.htmlEditor = monaco.editor.create(
           document.getElementById("html-editor"),
           {
@@ -111,9 +112,15 @@
             language: "html",
             theme: "vs-dark",
             automaticLayout: true,
+
+            // 🔥 UX IMPROVEMENTS
+            quickSuggestions: true,
+            suggestOnTriggerCharacters: true,
+            tabCompletion: "on",
           },
         );
 
+        // CSS EDITOR
         window.cssEditor = monaco.editor.create(
           document.getElementById("css-editor"),
           {
@@ -124,6 +131,7 @@
           },
         );
 
+        // JS EDITOR
         window.jsEditor = monaco.editor.create(
           document.getElementById("js-editor"),
           {
@@ -134,12 +142,51 @@
           },
         );
 
-        /* 🔥 LIVE AUTO RUN */
+        // 🔥 SNIPPETS (VS Code-like)
+        monaco.languages.registerCompletionItemProvider("html", {
+          provideCompletionItems: () => ({
+            suggestions: [
+              snippet("div", "<div>$1</div>"),
+              snippet("span", "<span>$1</span>"),
+              snippet("p", "<p>$1</p>"),
+              snippet("h1", "<h1>$1</h1>"),
+              snippet("h2", "<h2>$1</h2>"),
+              snippet("button", "<button>$1</button>"),
+
+              snippet("a", '<a href="$1">$2</a>'),
+              snippet("img", '<img src="$1" alt="$2">'),
+
+              snippet("ul", "<ul>\n\t<li>$1</li>\n</ul>"),
+              snippet("li", "<li>$1</li>"),
+
+              snippet("form", "<form>$1</form>"),
+              snippet("input", '<input type="$1" placeholder="$2">'),
+
+              snippet("section", "<section>$1</section>"),
+              snippet("header", "<header>$1</header>"),
+              snippet("footer", "<footer>$1</footer>"),
+            ],
+          }),
+        });
+
+        // helper function
+        function snippet(label, body) {
+          return {
+            label: label,
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            insertText: body,
+            insertTextRules:
+              monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: label + " snippet",
+          };
+        }
+
+        // 🔥 LIVE AUTO RUN
         htmlEditor.onDidChangeModelContent(run);
         cssEditor.onDidChangeModelContent(run);
         jsEditor.onDidChangeModelContent(run);
 
-        /* 🔥 INITIAL RUN */
+        // 🔥 INITIAL RUN
         run();
       });
     </script>
