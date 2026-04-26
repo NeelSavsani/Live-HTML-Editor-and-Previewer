@@ -233,4 +233,8 @@ footer {
         font-size: 12px;
         padding: 4px 8px;
     }
+
+    footer{
+        margin-top: 100px;
+    }
 }
