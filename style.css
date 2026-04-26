@@ -65,6 +65,7 @@ iframe {
     flex: 1;
     background: #fff;
     border: none;
+    border-radius: 6px;
 }
 
 /* LABELS */
@@ -149,6 +150,48 @@ footer {
 .socials a:hover {
     color: var(--accent-hover);
     transform: translateY(-2px);
+}
+
+/* EDITOR WRAPPER */
+.editor {
+    display: flex;
+    background: var(--bg-editor);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.left .editor{
+    flex: 1;
+    min-height: 0;
+}
+
+/* LINE NUMBERS */
+.line-numbers {
+    width: 40px;
+    background: #081821;
+    color: #6fa3b8;
+    text-align: right;
+    padding: 10px 5px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    user-select: none;
+    overflow: hidden;
+}
+
+/* TEXTAREA */
+.editor textarea {
+    flex: 1;
+    border: none;
+    outline: none;
+    resize: none;
+    background: transparent;
+    color: var(--text-main);
+    padding: 10px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 @keyframes heartbeat {

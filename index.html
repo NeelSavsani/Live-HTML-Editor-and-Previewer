@@ -5,18 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Live Code Editor</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
-    <script src="https://kit.fontawesome.com/e05d24f6c7.js" crossorigin="anonymous" ></script>
+    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+    <script
+      src="https://kit.fontawesome.com/e05d24f6c7.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <div class="container">
       <div class="left">
         <label><i class="fa-brands fa-html5"></i> HTML</label>
-        <textarea name="html-code" id="html-code" onkeyup="run()"></textarea>
+        <!-- <textarea name="html-code" id="html-code" onkeyup="run()"></textarea> -->
+        <div class="editor">
+          <div class="line-numbers" id="html-lines"></div>
+          <textarea
+            id="html-code"
+            onkeyup="
+              run();
+              updateLines('html-code', 'html-lines');
+            "
+            onscroll="syncScroll(this, 'html-lines')"
+          ></textarea>
+        </div>
         <label><i class="fa-brands fa-css3-alt"></i> CSS</label>
-        <textarea name="css-code" id="css-code" onkeyup="run()"></textarea>
+        <!-- <textarea name="css-code" id="css-code" onkeyup="run()"></textarea> -->
+        <div class="editor">
+          <div class="line-numbers" id="css-lines"></div>
+          <textarea
+            id="css-code"
+            onkeyup="
+              run();
+              updateLines('css-code', 'css-lines');
+            "
+            onscroll="syncScroll(this, 'css-lines')"
+          ></textarea>
+        </div>
         <label><i class="fa-brands fa-js"></i> JavaScript</label>
-        <textarea name="js-code" id="js-code" onkeyup="run()"></textarea>
+        <!-- <textarea name="js-code" id="js-code" onkeyup="run()"></textarea> -->
+        <div class="editor">
+          <div class="line-numbers" id="js-lines"></div>
+          <textarea
+            id="js-code"
+            onkeyup="
+              run();
+              updateLines('js-code', 'js-lines');
+            "
+            onscroll="syncScroll(this, 'js-lines')"
+          ></textarea>
+        </div>
       </div>
       <div class="right">
         <label>Output <i class="fa-solid fa-play"></i></label>
@@ -60,6 +96,32 @@
           htmlCode + "<style>" + cssCode + "</style>";
         output.contentWindow.eval(jsCode);
       }
+
+      function updateLines(textareaId, linesId) {
+        let textarea = document.getElementById(textareaId);
+        let lines = document.getElementById(linesId);
+
+        let count = textarea.value.split("\n").length;
+        let numbers = "";
+
+        for (let i = 1; i <= count; i++) {
+          numbers += i + "<br>";
+        }
+
+        lines.innerHTML = numbers;
+      }
+
+      function syncScroll(textarea, linesId) {
+        let lines = document.getElementById(linesId);
+        lines.scrollTop = textarea.scrollTop;
+      }
+
+      /* Initialize line numbers on load */
+      window.onload = function () {
+        updateLines("html-code", "html-lines");
+        updateLines("css-code", "css-lines");
+        updateLines("js-code", "js-lines");
+      };
     </script>
   </body>
 </html>
