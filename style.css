@@ -31,18 +31,38 @@ body {
     height: 100vh;
     padding: 10px;
     display: flex;
-    gap: 10px;
+    gap: 5px;
 }
 
 /* LEFT + RIGHT PANELS */
 .left,
 .right {
-    flex: 1;
+    /* flex: 1; */
     display: flex;
     flex-direction: column;
     gap: 5px;
-    height: 100%;
+    /* height: 100%; */
     /* 🔥 required */
+}
+
+.left {
+    width: 50%;
+    min-width: 250px;
+}
+
+.right {
+    flex: 1;
+}
+
+.divider {
+    width: 6px;
+    cursor: col-resize;
+    background: var(--border);
+    border-radius: 3px;
+}
+
+.divider:hover {
+    background: var(--accent-hover);
 }
 
 /* MONACO EDITORS */
@@ -50,7 +70,7 @@ body {
     flex: 1;
     min-height: 0;
     /* 🔥 critical */
-    height: 100%;
+    /* height: 100%; */
     /* 🔥 required */
     border-radius: 6px;
     overflow: hidden;
@@ -234,7 +254,7 @@ footer {
         padding: 4px 8px;
     }
 
-    footer{
+    footer {
         margin-top: 100px;
     }
 }
