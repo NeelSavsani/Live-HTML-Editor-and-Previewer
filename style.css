@@ -160,6 +160,15 @@ html, body {
   opacity: 0.9;
 }
 
+.brand-logo-img {
+  height: 28px;
+  width: auto;
+  max-width: 32px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  display: block;
+}
+
 .logo-badge {
   display: flex;
   align-items: center;
