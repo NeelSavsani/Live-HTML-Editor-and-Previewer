@@ -341,13 +341,11 @@ function toggleExplorerSidebar(force) {
   const activityBtn = document.getElementById('btn-activity-explorer');
   if (!sidebar) return;
 
-  if (typeof force === 'boolean') {
-    state.isExplorerOpen = force;
-  } else {
-    state.isExplorerOpen = !state.isExplorerOpen;
-  }
+  const isCurrentlyCollapsed = sidebar.classList.contains('collapsed');
+  const shouldOpen = typeof force === 'boolean' ? force : isCurrentlyCollapsed;
+  state.isExplorerOpen = shouldOpen;
 
-  if (state.isExplorerOpen) {
+  if (shouldOpen) {
     sidebar.classList.remove('collapsed');
     if (activityBtn) activityBtn.classList.add('active');
   } else {
@@ -356,7 +354,7 @@ function toggleExplorerSidebar(force) {
   }
 
   // Trigger Monaco relayout on animation intervals
-  [50, 150, 220].forEach(delay => {
+  [50, 150, 250].forEach(delay => {
     setTimeout(() => {
       if (state.editor) state.editor.layout();
     }, delay);
@@ -755,18 +753,19 @@ function initUIEvents() {
     langMenu.classList.remove('show');
   });
 
-  // Dropdown actions
+  // Files / Explorer Activity Button Toggle
+  const btnActivityExplorer = document.getElementById('btn-activity-explorer');
+  if (btnActivityExplorer) {
+    btnActivityExplorer.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleExplorerSidebar();
+    });
+  }
+
+  // Dropdown & Generic Action elements
   document.querySelectorAll('[data-action]').forEach(el => {
     el.addEventListener('click', (e) => {
       const action = el.dataset.action;
-      handleAction(action);
-    });
-  });
-
-  // Activity Bar item actions
-  document.querySelectorAll('.activity-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const action = btn.dataset.action;
       if (action) handleAction(action);
     });
   });
