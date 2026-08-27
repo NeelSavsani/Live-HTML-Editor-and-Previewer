@@ -670,14 +670,6 @@ function initUIEvents() {
     });
   }
 
-  // Sidebar Header Close Button
-  const btnSidebarClose = document.getElementById('btn-sidebar-close');
-  if (btnSidebarClose) {
-    btnSidebarClose.addEventListener('click', () => {
-      toggleExplorerSidebar(false);
-    });
-  }
-
   // Theme Toggle Button
   document.getElementById('btn-theme-toggle').addEventListener('click', toggleTheme);
 
