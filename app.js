@@ -102,6 +102,7 @@ console.log("CodeNest live preview running successfully!");`
 const state = {
   files: JSON.parse(JSON.stringify(defaultFiles)),
   activeFile: 'index.html',
+  currentPreviewHtml: 'index.html',
   isExplorerOpen: true,
   editor: null,
   models: {},
@@ -374,6 +375,11 @@ function switchFileTab(fileName) {
 
   state.activeFile = fileName;
 
+  // If switched to an HTML file, set as current preview file
+  if (fileName.endsWith('.html') || fileName.endsWith('.htm')) {
+    state.currentPreviewHtml = fileName;
+  }
+
   // Switch Monaco Model
   if (state.editor && state.models[fileName]) {
     state.editor.setModel(state.models[fileName]);
@@ -384,6 +390,11 @@ function switchFileTab(fileName) {
   }
 
   renderTabs();
+
+  // If switched to an HTML file, update preview immediately
+  if (fileName.endsWith('.html') || fileName.endsWith('.htm')) {
+    runPreview(true);
+  }
 }
 
 /**
@@ -474,11 +485,21 @@ function debouncedRun() {
  * Execute and Render Live Preview
  */
 function runPreview(force) {
-  const htmlContent = state.files['index.html'] ? (state.models['index.html'] ? state.models['index.html'].getValue() : state.files['index.html'].content) : '';
-  const cssContent = state.files['styles.css'] ? (state.models['styles.css'] ? state.models['styles.css'].getValue() : state.files['styles.css'].content) : '';
-  const jsContent = state.files['script.js'] ? (state.models['script.js'] ? state.models['script.js'].getValue() : state.files['script.js'].content) : '';
+  // Determine which HTML file to preview
+  const activeHtmlName = (state.activeFile && (state.activeFile.endsWith('.html') || state.activeFile.endsWith('.htm')))
+    ? state.activeFile
+    : (state.currentPreviewHtml && state.files[state.currentPreviewHtml] ? state.currentPreviewHtml : (Object.keys(state.files).find(f => f.endsWith('.html')) || 'index.html'));
 
-  const combinedKey = `${htmlContent}|||${cssContent}|||${jsContent}`;
+  state.currentPreviewHtml = activeHtmlName;
+
+  let htmlContent = state.files[activeHtmlName] ? (state.models[activeHtmlName] ? state.models[activeHtmlName].getValue() : state.files[activeHtmlName].content) : '';
+  const defaultCss = state.files['styles.css'] ? (state.models['styles.css'] ? state.models['styles.css'].getValue() : state.files['styles.css'].content) : '';
+  const defaultJs = state.files['script.js'] ? (state.models['script.js'] ? state.models['script.js'].getValue() : state.files['script.js'].content) : '';
+
+  // Collect all files snapshot for cache comparison
+  const allFilesSnapshot = Object.keys(state.files).map(k => `${k}:${state.models[k] ? state.models[k].getValue() : state.files[k].content}`).join('---');
+  const combinedKey = `${activeHtmlName}|||${allFilesSnapshot}`;
+  
   if (!force && state.lastExecutedCode === combinedKey) {
     return;
   }
@@ -490,8 +511,8 @@ function runPreview(force) {
   if (statusDot) statusDot.className = 'status-dot busy';
   if (statusText) statusText.innerText = 'Running...';
 
-  // Console Proxy Script to capture inside iframe
-  const consoleScript = `
+  // Console Proxy and Navigation Interception Script
+  const previewHelperScript = `
     <script>
       (function() {
         const _origLog = console.log;
@@ -529,44 +550,109 @@ function runPreview(force) {
           post('error', [msg + (line ? ' (line ' + line + ')' : '')]);
           return false;
         };
+
+        // Intercept link clicks to prevent iframe navigation crash
+        document.addEventListener('click', function(e) {
+          var a = e.target.closest('a');
+          if (!a) return;
+          var href = a.getAttribute('href');
+          if (!href || href.startsWith('javascript:') || href === '#') return;
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (href.startsWith('http://') || href.startsWith('https://')) {
+            window.open(href, '_blank');
+          } else {
+            var clean = href.replace(/^(\\.\\/|\\/)/, '').split('#')[0].split('?')[0];
+            window.parent.postMessage({
+              source: 'codenest-preview',
+              type: 'navigate',
+              target: clean,
+              fullHref: href
+            }, '*');
+          }
+        }, true);
       })();
     <\/script>
   `;
 
-  // Build combined document
+  // Dynamically inline any linked CSS files in htmlContent
+  let inlinedStyles = '';
+
+  htmlContent = htmlContent.replace(/<link[^>]+href=["'](?:\.\/)?([^"']+\.css)["'][^>]*>/gi, (match, cssFilename) => {
+    if (state.files[cssFilename]) {
+      const cssVal = state.models[cssFilename] ? state.models[cssFilename].getValue() : state.files[cssFilename].content;
+      return `<style data-file="${cssFilename}">\n${cssVal}\n</style>`;
+    }
+    return match;
+  });
+
+  // Dynamically inline any linked JS files in htmlContent
+  let inlinedScripts = '';
+
+  htmlContent = htmlContent.replace(/<script[^>]+src=["'](?:\.\/)?([^"']+\.js)["'][^>]*>\s*<\/script>/gi, (match, jsFilename) => {
+    if (state.files[jsFilename]) {
+      const jsVal = state.models[jsFilename] ? state.models[jsFilename].getValue() : state.files[jsFilename].content;
+      return `<script data-file="${jsFilename}">\ntry {\n${jsVal}\n} catch(err) { console.error(err.message || err); }\n<\/script>`;
+    }
+    return match;
+  });
+
+  // Assemble full document
   let docContent = '';
-  
   if (htmlContent.includes('<head>')) {
-    docContent = htmlContent
-      .replace('<head>', `<head>${consoleScript}<style>${cssContent}</style>`)
-      .replace('</head>', `</head>`);
+    docContent = htmlContent.replace('<head>', `<head>${previewHelperScript}${inlinedStyles}`);
   } else {
-    docContent = `<!DOCTYPE html><html><head>${consoleScript}<style>${cssContent}</style></head><body>${htmlContent}</body></html>`;
+    docContent = `<!DOCTYPE html><html><head>${previewHelperScript}${inlinedStyles}</head><body>${htmlContent}</body></html>`;
   }
 
-  // Inject user JS before closing body tag
-  const scriptTag = `<script>\ntry {\n${jsContent}\n} catch(err) {\nconsole.error(err.message || err);\n}\n<\/script>`;
-  if (docContent.includes('</body>')) {
-    docContent = docContent.replace('</body>', `${scriptTag}</body>`);
-  } else {
-    docContent += scriptTag;
+  if (inlinedScripts) {
+    if (docContent.includes('</body>')) {
+      docContent = docContent.replace('</body>', `${inlinedScripts}</body>`);
+    } else {
+      docContent += inlinedScripts;
+    }
   }
 
   const iframe = document.getElementById('output-frame');
-  iframe.srcdoc = docContent;
+  if (iframe) {
+    iframe.srcdoc = docContent;
+  }
 
   setTimeout(() => {
-    statusDot.className = 'status-dot';
-    statusText.innerText = 'Ready';
+    if (statusDot) statusDot.className = 'status-dot';
+    if (statusText) statusText.innerText = 'Ready';
   }, 200);
 }
 
 /**
- * Handle Console Logs from Iframe
+ * Handle Console Logs and Navigation from Iframe
  */
 function initConsoleListener() {
   window.addEventListener('message', (e) => {
     if (!e.data || e.data.source !== 'codenest-preview') return;
+
+    if (e.data.type === 'navigate') {
+      const target = e.data.target;
+      let targetFile = null;
+      if (state.files[target]) {
+        targetFile = target;
+      } else if (state.files[target + '.html']) {
+        targetFile = target + '.html';
+      } else if (state.files[target + '.htm']) {
+        targetFile = target + '.htm';
+      }
+
+      if (targetFile) {
+        state.currentPreviewHtml = targetFile;
+        switchFileTab(targetFile);
+        showToast(`Opened ${targetFile}`);
+      } else {
+        showToast(`File "${target}" not found in project`);
+      }
+      return;
+    }
 
     const { type, message, time } = e.data;
     addConsoleEntry(type, message, time);
