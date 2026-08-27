@@ -796,31 +796,124 @@ function initUIEvents() {
     }
   });
 
-  // Save Settings Form
-  document.getElementById('form-settings').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const fontSize = parseInt(document.getElementById('setting-font-size').value, 10);
-    const tabSize = parseInt(document.getElementById('setting-tab-size').value, 10);
-    const wordWrap = document.getElementById('setting-word-wrap').value;
-    const autoRun = document.getElementById('setting-auto-run').checked;
+  // Settings Modal Controls
+  // Font Size Stepper
+  const btnFontDec = document.getElementById('btn-font-dec');
+  const btnFontInc = document.getElementById('btn-font-inc');
+  if (btnFontDec) {
+    btnFontDec.addEventListener('click', () => updateFontSize(state.fontSize - 1));
+  }
+  if (btnFontInc) {
+    btnFontInc.addEventListener('click', () => updateFontSize(state.fontSize + 1));
+  }
 
-    state.fontSize = fontSize;
-    state.tabSize = tabSize;
-    state.wordWrap = wordWrap;
-    state.autoRun = autoRun;
+  // Theme Settings Pills
+  const btnThemeLight = document.getElementById('btn-setting-theme-light');
+  const btnThemeDark = document.getElementById('btn-setting-theme-dark');
+  if (btnThemeLight) {
+    btnThemeLight.addEventListener('click', () => setTheme('light'));
+  }
+  if (btnThemeDark) {
+    btnThemeDark.addEventListener('click', () => setTheme('dark'));
+  }
 
-    if (state.editor) {
-      state.editor.updateOptions({
-        fontSize,
-        tabSize,
-        wordWrap
-      });
+  // Editor Settings Pills (Monaco / Ace)
+  const btnEditorMonaco = document.getElementById('btn-setting-editor-monaco');
+  const btnEditorAce = document.getElementById('btn-setting-editor-ace');
+  if (btnEditorMonaco && btnEditorAce) {
+    btnEditorMonaco.addEventListener('click', () => {
+      btnEditorMonaco.classList.add('active');
+      btnEditorAce.classList.remove('active');
+      showToast('Monaco Editor active');
+    });
+    btnEditorAce.addEventListener('click', () => {
+      btnEditorAce.classList.add('active');
+      btnEditorMonaco.classList.remove('active');
+      showToast('Monaco is currently the primary engine');
+    });
+  }
+
+  // Word Wrap Switch Toggle
+  const toggleWordWrap = document.getElementById('setting-word-wrap-toggle');
+  if (toggleWordWrap) {
+    toggleWordWrap.addEventListener('change', (e) => {
+      state.wordWrap = e.target.checked ? 'on' : 'off';
+      if (state.editor) {
+        state.editor.updateOptions({ wordWrap: state.wordWrap });
+      }
+      showToast(`Word wrap: ${state.wordWrap}`);
+    });
+  }
+
+  // Reset to defaults button
+  const btnResetSettings = document.getElementById('btn-reset-settings');
+  if (btnResetSettings) {
+    btnResetSettings.addEventListener('click', () => {
+      updateFontSize(14);
+      setTheme('dark');
+      if (toggleWordWrap) toggleWordWrap.checked = true;
+      state.wordWrap = 'on';
+      if (state.editor) state.editor.updateOptions({ wordWrap: 'on' });
+      if (btnEditorMonaco) btnEditorMonaco.classList.add('active');
+      if (btnEditorAce) btnEditorAce.classList.remove('active');
+      showToast('Settings reset to defaults');
+    });
+  }
+}
+
+/**
+ * Update Font Size
+ */
+function updateFontSize(newSize) {
+  if (newSize < 8) newSize = 8;
+  if (newSize > 32) newSize = 32;
+  state.fontSize = newSize;
+
+  const valEl = document.getElementById('val-font-size');
+  if (valEl) valEl.innerText = `${newSize}px`;
+
+  const statusEl = document.getElementById('status-font-size');
+  if (statusEl) statusEl.innerText = `${newSize}px`;
+
+  if (state.editor) {
+    state.editor.updateOptions({ fontSize: newSize });
+  }
+}
+
+/**
+ * Set Theme (Light or Dark)
+ */
+function setTheme(themeName) {
+  const isLight = themeName === 'light';
+  if (isLight) {
+    document.body.classList.add('light-theme');
+    state.theme = 'vs';
+  } else {
+    document.body.classList.remove('light-theme');
+    state.theme = 'vs-dark';
+  }
+
+  const icon = document.querySelector('#btn-theme-toggle i');
+  if (icon) icon.className = isLight ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+
+  const statusTheme = document.getElementById('status-theme');
+  if (statusTheme) statusTheme.innerText = isLight ? 'Light' : 'Dark';
+
+  const btnLight = document.getElementById('btn-setting-theme-light');
+  const btnDark = document.getElementById('btn-setting-theme-dark');
+  if (btnLight && btnDark) {
+    if (isLight) {
+      btnLight.classList.add('active');
+      btnDark.classList.remove('active');
+    } else {
+      btnDark.classList.add('active');
+      btnLight.classList.remove('active');
     }
+  }
 
-    document.getElementById('status-font-size').innerText = `${fontSize}px`;
-    closeAllModals();
-    showToast('Settings saved');
-  });
+  if (monaco && monaco.editor) {
+    monaco.editor.setTheme(state.theme);
+  }
 }
 
 /**
@@ -882,21 +975,8 @@ function handleAction(action) {
  * Toggle Dark / Light Theme
  */
 function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-theme');
-  state.theme = isLight ? 'vs' : 'vs-dark';
-  
-  const icon = document.querySelector('#btn-theme-toggle i');
-  if (isLight) {
-    icon.className = 'fa-solid fa-moon';
-    document.getElementById('status-theme').innerText = 'Light';
-  } else {
-    icon.className = 'fa-solid fa-sun';
-    document.getElementById('status-theme').innerText = 'Dark';
-  }
-
-  if (monaco && monaco.editor) {
-    monaco.editor.setTheme(state.theme);
-  }
+  const isLight = document.body.classList.contains('light-theme');
+  setTheme(isLight ? 'dark' : 'light');
 }
 
 /**

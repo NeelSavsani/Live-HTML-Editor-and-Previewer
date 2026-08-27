@@ -1148,6 +1148,215 @@ html, body {
   opacity: 0.9;
 }
 
+/* ==========================================================================
+   Editor Settings Modal Custom Styling
+   ========================================================================== */
+.modal-box-settings {
+  width: 480px;
+  background: var(--bg-modal);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+}
+
+.modal-content-settings {
+  padding: 16px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-label-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.settings-label-title {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-bright);
+}
+
+.settings-label-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+/* Stepper Control */
+.stepper-control {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  user-select: none;
+}
+
+.btn-stepper {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.15s ease;
+}
+
+.btn-stepper:hover {
+  background: var(--bg-sidebar-hover);
+  color: var(--text-bright);
+}
+
+.stepper-val {
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-bright);
+  font-family: var(--font-code);
+  min-width: 44px;
+  text-align: center;
+}
+
+/* Pill Group / Segmented Buttons */
+.pill-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  gap: 2px;
+  user-select: none;
+}
+
+.pill-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 5px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.pill-toggle-btn:hover {
+  color: var(--text-bright);
+}
+
+.pill-toggle-btn.active {
+  background: var(--bg-sidebar-hover);
+  color: var(--text-bright);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* iOS Style Switch Toggle */
+.switch-toggle {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  inset: 0;
+  background-color: var(--border-light);
+  transition: 0.2s;
+  border-radius: 22px;
+}
+
+.switch-slider::before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.2s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.switch-toggle input:checked + .switch-slider {
+  background-color: var(--accent-lang);
+}
+
+.switch-toggle input:checked + .switch-slider::before {
+  transform: translateX(18px);
+}
+
+/* Modal Footer Settings */
+.modal-footer-settings {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px;
+}
+
+.btn-text-link {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.15s;
+}
+
+.btn-text-link:hover {
+  color: var(--accent-blue);
+  text-decoration: underline;
+}
+
+.btn-done {
+  background: var(--accent-lang);
+  border: none;
+  color: #ffffff;
+  padding: 7px 22px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.btn-done:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
 /* Toast Notifications */
 .toast-container {
   position: fixed;

@@ -114,7 +114,7 @@
 
           <!-- Download Button -->
           <button class="nav-icon-btn" id="btn-download" title="Download HTML">
-            <i class="fa-solid fa-arrow-down-to-bracket"></i>
+            <i class="fa-solid fa-download"></i>
           </button>
 
           <!-- Fullscreen Button -->
@@ -140,18 +140,9 @@
             <button class="activity-btn" title="Find in Code (Ctrl + F)" data-action="find-code">
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-            <button class="activity-btn" title="Reset Code" data-action="reset-code">
-              <i class="fa-solid fa-code-branch"></i>
-            </button>
-            <button class="activity-btn" title="Neel Savsani GitHub" data-action="open-github">
-              <i class="fa-brands fa-github"></i>
-            </button>
           </div>
 
           <div class="activity-bar-group">
-            <button class="activity-btn" title="Portfolio / Author" data-action="open-portfolio">
-              <i class="fa-solid fa-user-astronaut"></i>
-            </button>
             <button class="activity-btn" title="Editor Settings" data-action="open-settings">
               <i class="fa-solid fa-gear"></i>
             </button>
@@ -297,41 +288,72 @@
 
     <!-- Settings Modal -->
     <div class="modal-overlay" id="modal-settings">
-      <div class="modal-box">
+      <div class="modal-box modal-box-settings">
         <div class="modal-header">
           <h3 class="modal-title">Editor Settings</h3>
           <button class="modal-close" data-modal-close><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <form id="form-settings">
-          <div class="modal-content">
-            <div class="form-group">
-              <label for="setting-font-size">Font Size (px)</label>
-              <input type="number" id="setting-font-size" class="form-control" value="14" min="10" max="32" />
+        <div class="modal-content modal-content-settings">
+          <!-- Font Size Setting -->
+          <div class="settings-row">
+            <div class="settings-label-group">
+              <span class="settings-label-title">Font size</span>
+              <span class="settings-label-sub">8-32px</span>
             </div>
-            <div class="form-group">
-              <label for="setting-tab-size">Tab Size</label>
-              <select id="setting-tab-size" class="form-control">
-                <option value="2" selected>2 spaces</option>
-                <option value="4">4 spaces</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="setting-word-wrap">Word Wrap</label>
-              <select id="setting-word-wrap" class="form-control">
-                <option value="on" selected>On</option>
-                <option value="off">Off</option>
-              </select>
-            </div>
-            <div class="form-group" style="flex-direction: row; align-items: center; justify-content: space-between; margin-top: 4px;">
-              <label for="setting-auto-run" style="margin: 0; cursor: pointer;">Live Auto-Run Preview</label>
-              <input type="checkbox" id="setting-auto-run" checked style="cursor: pointer;" />
+            <div class="stepper-control">
+              <button type="button" class="btn-stepper" id="btn-font-dec" title="Decrease font size">
+                <i class="fa-solid fa-minus"></i>
+              </button>
+              <span class="stepper-val" id="val-font-size">14px</span>
+              <button type="button" class="btn-stepper" id="btn-font-inc" title="Increase font size">
+                <i class="fa-solid fa-plus"></i>
+              </button>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
-            <button type="submit" class="btn-primary">Save Settings</button>
+
+          <!-- Theme Setting -->
+          <div class="settings-row">
+            <div class="settings-label-group">
+              <span class="settings-label-title">Theme</span>
+            </div>
+            <div class="pill-group">
+              <button type="button" class="pill-toggle-btn" id="btn-setting-theme-light">
+                <i class="fa-regular fa-sun"></i> Light
+              </button>
+              <button type="button" class="pill-toggle-btn active" id="btn-setting-theme-dark">
+                <i class="fa-solid fa-moon"></i> Dark
+              </button>
+            </div>
           </div>
-        </form>
+
+          <!-- Editor Setting -->
+          <div class="settings-row">
+            <div class="settings-label-group">
+              <span class="settings-label-title">Editor</span>
+              <span class="settings-label-sub">On mobile, Monaco is optimized.</span>
+            </div>
+            <div class="pill-group">
+              <button type="button" class="pill-toggle-btn active" id="btn-setting-editor-monaco">Monaco</button>
+              <button type="button" class="pill-toggle-btn" id="btn-setting-editor-ace">Ace</button>
+            </div>
+          </div>
+
+          <!-- Word Wrap Setting -->
+          <div class="settings-row">
+            <div class="settings-label-group">
+              <span class="settings-label-title">Word wrap</span>
+              <span class="settings-label-sub">Wrap long lines to fit the editor width</span>
+            </div>
+            <label class="switch-toggle" for="setting-word-wrap-toggle">
+              <input type="checkbox" id="setting-word-wrap-toggle" checked />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer modal-footer-settings">
+          <button type="button" class="btn-text-link" id="btn-reset-settings">Reset to defaults</button>
+          <button type="button" class="btn-done" data-modal-close>Done</button>
+        </div>
       </div>
     </div>
 
