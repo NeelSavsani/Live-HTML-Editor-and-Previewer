@@ -1198,17 +1198,17 @@ html, body {
 .stepper-control {
   display: inline-flex;
   align-items: center;
-  background: var(--bg-input);
-  border: 1px solid var(--border-color);
+  background: #101010;
+  border: 1px solid #2d2d2d;
   border-radius: var(--radius-md);
-  padding: 2px;
+  padding: 3px;
   user-select: none;
 }
 
 .btn-stepper {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
+  background: #1e1e1e;
+  border: 1px solid #2d2d2d;
+  color: #b0b0b0;
   width: 28px;
   height: 28px;
   border-radius: var(--radius-sm);
@@ -1216,41 +1216,42 @@ html, body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
   transition: all 0.15s ease;
 }
 
 .btn-stepper:hover {
-  background: var(--bg-sidebar-hover);
-  color: var(--text-bright);
+  background: #333842;
+  border-color: #4b5563;
+  color: #ffffff;
 }
 
 .stepper-val {
-  padding: 0 10px;
+  padding: 0 12px;
   font-size: 13px;
-  font-weight: 500;
-  color: var(--text-bright);
+  font-weight: 600;
+  color: #ffffff;
   font-family: var(--font-code);
-  min-width: 44px;
+  min-width: 48px;
   text-align: center;
 }
 
-/* Pill Group / Segmented Buttons */
+/* Pill Group / Segmented Buttons - High Contrast */
 .pill-group {
   display: inline-flex;
   align-items: center;
-  background: var(--bg-input);
-  border: 1px solid var(--border-color);
+  background: #101010;
+  border: 1px solid #2d2d2d;
   border-radius: var(--radius-md);
-  padding: 2px;
-  gap: 2px;
+  padding: 3px;
+  gap: 3px;
   user-select: none;
 }
 
 .pill-toggle-btn {
   background: transparent;
-  border: none;
-  color: var(--text-muted);
+  border: 1px solid transparent;
+  color: #888888;
   padding: 5px 14px;
   border-radius: var(--radius-sm);
   font-size: 12px;
@@ -1263,13 +1264,31 @@ html, body {
 }
 
 .pill-toggle-btn:hover {
-  color: var(--text-bright);
+  color: #ffffff;
 }
 
 .pill-toggle-btn.active {
-  background: var(--bg-sidebar-hover);
-  color: var(--text-bright);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  background: #323846 !important;
+  color: #ffffff !important;
+  border: 1px solid #4b5563 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+body.light-theme .pill-group {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+body.light-theme .pill-toggle-btn {
+  color: #64748b;
+}
+
+body.light-theme .pill-toggle-btn.active {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 /* iOS Style Switch Toggle */
