@@ -102,6 +102,7 @@ console.log("CodeNest live preview running successfully!");`
 const state = {
   files: JSON.parse(JSON.stringify(defaultFiles)),
   activeFile: 'index.html',
+  isExplorerOpen: true,
   editor: null,
   models: {},
   viewStates: {},
@@ -193,8 +194,9 @@ function initMonaco() {
     showToast('Code executed');
   });
 
-  // Render initial Tabs UI
+  // Render initial Tabs and Explorer UI
   renderTabs();
+  renderExplorerFiles();
 
   // Initial Run
   runPreview();
@@ -277,6 +279,75 @@ function renderTabs() {
     document.getElementById('status-lang').innerText = activeFileObj.language.toUpperCase();
     document.getElementById('nav-lang-label').innerText = activeFileObj.language.toUpperCase();
   }
+
+  // Also sync Explorer Files list
+  renderExplorerFiles();
+}
+
+/**
+ * Render Explorer Sidebar file tree items
+ */
+function renderExplorerFiles() {
+  const container = document.getElementById('sidebar-files-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  Object.keys(state.files).forEach(fileName => {
+    const file = state.files[fileName];
+    const isActive = fileName === state.activeFile;
+
+    const item = document.createElement('div');
+    item.className = `sidebar-file-item ${isActive ? 'active' : ''}`;
+    item.dataset.file = fileName;
+    item.innerHTML = `
+      <div class="sidebar-file-info">
+        <i class="${file.iconClass}"></i>
+        <span class="sidebar-file-name">${file.name}</span>
+      </div>
+      ${Object.keys(state.files).length > 1 ? `<span class="sidebar-file-close" data-close="${fileName}" title="Delete file"><i class="fa-solid fa-xmark"></i></span>` : ''}
+    `;
+
+    item.addEventListener('click', (e) => {
+      if (e.target.closest('.sidebar-file-close')) {
+        e.stopPropagation();
+        closeFileTab(fileName);
+        return;
+      }
+      switchFileTab(fileName);
+    });
+
+    container.appendChild(item);
+  });
+}
+
+/**
+ * Toggle Explorer Sidebar (open / close)
+ */
+function toggleExplorerSidebar(force) {
+  const sidebar = document.getElementById('sidebar-explorer');
+  const activityBtn = document.getElementById('btn-activity-explorer');
+  if (!sidebar) return;
+
+  if (typeof force === 'boolean') {
+    state.isExplorerOpen = force;
+  } else {
+    state.isExplorerOpen = !state.isExplorerOpen;
+  }
+
+  if (state.isExplorerOpen) {
+    sidebar.classList.remove('collapsed');
+    if (activityBtn) activityBtn.classList.add('active');
+  } else {
+    sidebar.classList.add('collapsed');
+    if (activityBtn) activityBtn.classList.remove('active');
+  }
+
+  // Trigger Monaco relayout on animation intervals
+  [50, 150, 220].forEach(delay => {
+    setTimeout(() => {
+      if (state.editor) state.editor.layout();
+    }, delay);
+  });
 }
 
 /**
@@ -591,6 +662,22 @@ function initUIEvents() {
     openModal('modal-new-file');
   });
 
+  // Sidebar Header Add File (+) Button
+  const btnSidebarAdd = document.getElementById('btn-sidebar-add-file');
+  if (btnSidebarAdd) {
+    btnSidebarAdd.addEventListener('click', () => {
+      openModal('modal-new-file');
+    });
+  }
+
+  // Sidebar Header Close Button
+  const btnSidebarClose = document.getElementById('btn-sidebar-close');
+  if (btnSidebarClose) {
+    btnSidebarClose.addEventListener('click', () => {
+      toggleExplorerSidebar(false);
+    });
+  }
+
   // Theme Toggle Button
   document.getElementById('btn-theme-toggle').addEventListener('click', toggleTheme);
 
@@ -731,6 +818,9 @@ function initUIEvents() {
  */
 function handleAction(action) {
   switch (action) {
+    case 'toggle-explorer':
+      toggleExplorerSidebar();
+      break;
     case 'format-code':
       if (state.editor) {
         state.editor.getAction('editor.action.formatDocument').run();
@@ -905,6 +995,7 @@ function resetToDefault() {
   state.activeFile = 'index.html';
   state.editor.setModel(state.models['index.html']);
   renderTabs();
+  renderExplorerFiles();
   runPreview();
   clearConsole();
   showToast('Project reset to default');
