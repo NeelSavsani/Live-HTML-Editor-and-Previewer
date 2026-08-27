@@ -126,14 +126,14 @@ html, body {
    Top Header / Navbar
    ========================================================================== */
 .navbar {
-  height: 48px;
-  min-height: 48px;
+  height: 52px;
+  min-height: 52px;
   background: var(--bg-header);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 14px;
+  padding: 0 16px;
   user-select: none;
   z-index: 50;
 }
@@ -147,11 +147,11 @@ html, body {
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
   color: var(--text-bright);
   font-weight: 700;
-  font-size: 18px;
+  font-size: 20px;
   letter-spacing: -0.3px;
   transition: opacity 0.2s;
 }
@@ -161,9 +161,9 @@ html, body {
 }
 
 .brand-logo-img {
-  height: 36px;
+  height: 42px;
   width: auto;
-  max-width: 42px;
+  max-width: 56px;
   object-fit: contain;
   display: block;
 }
