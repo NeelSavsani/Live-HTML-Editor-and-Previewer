@@ -113,12 +113,25 @@ const state = {
   wordWrap: 'on',
   isConsoleOpen: false,
   consoleEntries: [],
-  debounceTimer: null
+  debounceTimer: null,
+  lastExecutedCode: ''
 };
 
-// Monaco Configuration
+// Monaco Fast Worker Environment (prevents worker fetch timeout delays)
+window.MonacoEnvironment = {
+  getWorkerUrl: function () {
+    return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+      self.MonacoEnvironment = {
+        baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/base/worker/workerMain.js');
+    `)}`;
+  }
+};
+
+// Monaco Configuration using high-speed CDN
 require.config({
-  paths: { vs: 'https://unpkg.com/monaco-editor@latest/min/vs' }
+  paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }
 });
 
 // Initialize App once DOM and Monaco are ready
@@ -456,22 +469,28 @@ function debouncedRun() {
   clearTimeout(state.debounceTimer);
   state.debounceTimer = setTimeout(() => {
     runPreview();
-  }, 350);
+  }, 400);
 }
 
 /**
  * Execute and Render Live Preview
  */
-function runPreview() {
-  const statusDot = document.getElementById('status-indicator');
-  const statusText = document.getElementById('status-text');
-  
-  statusDot.className = 'status-dot busy';
-  statusText.innerText = 'Running...';
-
+function runPreview(force) {
   const htmlContent = state.files['index.html'] ? (state.models['index.html'] ? state.models['index.html'].getValue() : state.files['index.html'].content) : '';
   const cssContent = state.files['styles.css'] ? (state.models['styles.css'] ? state.models['styles.css'].getValue() : state.files['styles.css'].content) : '';
   const jsContent = state.files['script.js'] ? (state.models['script.js'] ? state.models['script.js'].getValue() : state.files['script.js'].content) : '';
+
+  const combinedKey = `${htmlContent}|||${cssContent}|||${jsContent}`;
+  if (!force && state.lastExecutedCode === combinedKey) {
+    return;
+  }
+  state.lastExecutedCode = combinedKey;
+
+  const statusDot = document.getElementById('status-indicator');
+  const statusText = document.getElementById('status-text');
+  
+  if (statusDot) statusDot.className = 'status-dot busy';
+  if (statusText) statusText.innerText = 'Running...';
 
   // Console Proxy Script to capture inside iframe
   const consoleScript = `
