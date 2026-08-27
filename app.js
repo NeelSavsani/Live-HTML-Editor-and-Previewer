@@ -731,27 +731,20 @@ function initUIEvents() {
   // Clear Console Button
   document.getElementById('btn-clear-console').addEventListener('click', clearConsole);
 
-  // More Options Menu Toggle (3 vertical dots)
-  const btnMore = document.getElementById('btn-more-options');
-  const moreMenu = document.getElementById('dropdown-more-options');
-  btnMore.addEventListener('click', (e) => {
-    e.stopPropagation();
-    moreMenu.classList.toggle('show');
-  });
-
   // Language badge dropdown
   const langBadge = document.getElementById('lang-badge');
   const langMenu = document.getElementById('dropdown-lang');
-  langBadge.addEventListener('click', (e) => {
-    e.stopPropagation();
-    langMenu.classList.toggle('show');
-  });
+  if (langBadge && langMenu) {
+    langBadge.addEventListener('click', (e) => {
+      e.stopPropagation();
+      langMenu.classList.toggle('show');
+    });
 
-  // Close dropdowns on outside click
-  document.addEventListener('click', () => {
-    moreMenu.classList.remove('show');
-    langMenu.classList.remove('show');
-  });
+    // Close dropdown on outside click
+    document.addEventListener('click', () => {
+      langMenu.classList.remove('show');
+    });
+  }
 
   // Files / Explorer Activity Button Toggle
   const btnActivityExplorer = document.getElementById('btn-activity-explorer');
