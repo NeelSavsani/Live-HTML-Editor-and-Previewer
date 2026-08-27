@@ -3,223 +3,360 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Live Code Editor</title>
+    <title>CodeNest - Online HTML, CSS & JavaScript Editor</title>
+    
+    <!-- Meta tags for SEO & preview -->
+    <meta name="description" content="CodeNest is a powerful, modern online live HTML, CSS, and JavaScript editor and previewer." />
+    <meta name="theme-color" content="#1e1e1e" />
 
-    <link rel="stylesheet" href="style.css" />
-    <script src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
-
+    <!-- Favicon -->
     <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
-    <script
-      src="https://kit.fontawesome.com/e05d24f6c7.js"
+
+    <!-- Google Fonts: Ubuntu & Fira Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
       crossorigin="anonymous"
-    ></script>
+    />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Monaco Editor Loader -->
+    <script src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
   </head>
 
   <body>
-    <div class="container">
-      <div class="left">
-        <label><i class="fa-brands fa-html5"></i> HTML</label>
-        <div id="html-editor" class="editor-box"></div>
+    <div id="app">
+      <!-- Top Navigation Bar -->
+      <header class="navbar">
+        <div class="nav-left">
+          <a href="#" class="brand-logo" title="CodeNest Online IDE">
+            <div class="logo-badge">
+              <i class="fa-solid fa-code"></i>
+            </div>
+            <span class="brand-name">Code<span>Nest</span></span>
+          </a>
+        </div>
 
-        <label><i class="fa-brands fa-css3-alt"></i> CSS</label>
-        <div id="css-editor" class="editor-box"></div>
+        <div class="nav-center">
+          <!-- Language Selector Badge -->
+          <div class="lang-badge" id="lang-badge" title="Active Language Template">
+            <span id="nav-lang-label">HTML</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
 
-        <label><i class="fa-brands fa-js"></i> JavaScript</label>
-        <div id="js-editor" class="editor-box"></div>
-      </div>
+          <!-- Language Dropdown Menu -->
+          <div class="dropdown-menu" id="dropdown-lang">
+            <button class="dropdown-item" data-action="switch-html">
+              <i class="fa-brands fa-html5" style="color: #e44d26"></i> HTML5
+            </button>
+            <button class="dropdown-item" data-action="switch-css">
+              <i class="fa-brands fa-css3-alt" style="color: #264de4"></i> CSS3
+            </button>
+            <button class="dropdown-item" data-action="switch-js">
+              <i class="fa-brands fa-js" style="color: #f7df1e"></i> JavaScript
+            </button>
+          </div>
 
-      <div class="divider"></div>
+          <!-- Run Button -->
+          <button class="btn-run" id="btn-run" title="Run Code (Ctrl + Enter)">
+            <i class="fa-solid fa-play"></i>
+            <span>Run</span>
+          </button>
 
-      <div class="right">
-        <label>Output <i class="fa-solid fa-play"></i></label>
-        <iframe id="output"></iframe>
+          <!-- More Options Menu Button -->
+          <button class="nav-icon-btn" id="btn-more-options" title="More Options">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </button>
+
+          <!-- More Options Dropdown -->
+          <div class="dropdown-menu" id="dropdown-more-options">
+            <button class="dropdown-item" data-action="format-code">
+              <i class="fa-solid fa-align-left"></i> Format Code
+            </button>
+            <button class="dropdown-item" data-action="clear-console">
+              <i class="fa-solid fa-broom"></i> Clear Console
+            </button>
+            <button class="dropdown-item" data-action="reset-code">
+              <i class="fa-solid fa-rotate-left"></i> Reset to Default
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item" data-action="download-project">
+              <i class="fa-solid fa-download"></i> Export HTML File
+            </button>
+            <button class="dropdown-item" data-action="show-shortcuts">
+              <i class="fa-regular fa-keyboard"></i> Keyboard Shortcuts
+            </button>
+          </div>
+        </div>
+
+        <div class="nav-right">
+          <!-- Theme Toggle (Sun / Moon) -->
+          <button class="nav-icon-btn" id="btn-theme-toggle" title="Toggle Dark/Light Theme">
+            <i class="fa-solid fa-sun"></i>
+          </button>
+
+          <!-- Share Button -->
+          <button class="nav-icon-btn" id="btn-share" title="Share Project">
+            <i class="fa-solid fa-share-nodes"></i>
+          </button>
+
+          <!-- Download Button -->
+          <button class="nav-icon-btn" id="btn-download" title="Download HTML">
+            <i class="fa-solid fa-arrow-down-to-bracket"></i>
+          </button>
+
+          <!-- Fullscreen Button -->
+          <button class="nav-icon-btn" id="btn-fullscreen" title="Toggle Fullscreen">
+            <i class="fa-solid fa-expand"></i>
+          </button>
+
+          <!-- Settings Button -->
+          <button class="nav-icon-btn" id="btn-settings" title="Editor Settings">
+            <i class="fa-solid fa-gear"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Workspace Section -->
+      <main class="main-workspace">
+        <!-- Left Activity Sidebar (VS Code Style) -->
+        <aside class="activity-bar">
+          <div class="activity-bar-group">
+            <button class="activity-btn active" title="Explorer (Files)" data-action="switch-html">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+            <button class="activity-btn" title="Find in Code (Ctrl + F)" data-action="find-code">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button class="activity-btn" title="Reset Code" data-action="reset-code">
+              <i class="fa-solid fa-code-branch"></i>
+            </button>
+            <button class="activity-btn" title="Neel Savsani GitHub" data-action="open-github">
+              <i class="fa-brands fa-github"></i>
+            </button>
+          </div>
+
+          <div class="activity-bar-group">
+            <button class="activity-btn" title="Portfolio / Author" data-action="open-portfolio">
+              <i class="fa-solid fa-user-astronaut"></i>
+            </button>
+            <button class="activity-btn" title="Editor Settings" data-action="open-settings">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+          </div>
+        </aside>
+
+        <!-- Editor and Preview Split Container -->
+        <div class="split-container" id="split-container">
+          <!-- Left Pane: Tabbed Editor -->
+          <section class="editor-pane" id="editor-pane">
+            <!-- Tabs Bar -->
+            <div class="tabs-bar">
+              <div class="tabs-container" id="tabs-container">
+                <!-- Dynamically populated tabs -->
+              </div>
+              <button class="btn-add-tab" id="btn-add-tab" title="Add New File">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+
+            <!-- Monaco Editor Mount Point -->
+            <div class="editor-host">
+              <div id="monaco-container"></div>
+            </div>
+          </section>
+
+          <!-- Resizer Divider -->
+          <div class="pane-divider" id="pane-divider" title="Drag to resize panes"></div>
+
+          <!-- Right Pane: Live Output Preview & Console -->
+          <section class="preview-pane" id="preview-pane">
+            <!-- Preview Header -->
+            <div class="preview-header">
+              <div class="preview-tabs">
+                <button class="preview-tab-btn active">
+                  <i class="fa-regular fa-eye"></i>
+                  <span>Preview</span>
+                </button>
+              </div>
+
+              <div class="preview-actions">
+                <button class="preview-icon-btn" id="btn-refresh-preview" title="Refresh Preview">
+                  <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                <button class="preview-icon-btn" id="btn-popout-preview" title="Open Preview in New Tab">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Preview Viewport -->
+            <div class="preview-viewport">
+              <iframe
+                id="output-frame"
+                sandbox="allow-scripts allow-modals allow-forms allow-same-origin"
+                title="CodeNest Live Output"
+              ></iframe>
+            </div>
+
+            <!-- Collapsible Console Drawer -->
+            <div class="console-drawer" id="console-drawer">
+              <div class="console-header" id="console-header">
+                <div class="console-title">
+                  <i class="fa-solid fa-chevron-right"></i>
+                  <span>Console</span>
+                  <span class="console-badge" id="console-badge">0</span>
+                </div>
+                <div class="console-actions">
+                  <button class="console-btn" id="btn-clear-console" title="Clear Console">
+                    <i class="fa-solid fa-ban"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="console-body" id="console-body">
+                <!-- Log entries appear here -->
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <!-- Bottom Status Bar -->
+      <footer class="statusbar">
+        <div class="statusbar-left">
+          <div class="status-item">
+            <span class="status-dot" id="status-indicator"></span>
+            <span id="status-text">Ready</span>
+          </div>
+          <div class="status-item" id="status-cursor">Ln 1, Col 1</div>
+        </div>
+
+        <div class="statusbar-right">
+          <div class="status-item status-hide-mobile">
+            <a href="https://neelsavsani.vercel.app" target="_blank" class="author-link" title="Developer Portfolio">
+              Made with <i class="fa-solid fa-heart"></i> by Neel Savsani
+            </a>
+          </div>
+          <div class="status-item status-hide-mobile" id="status-theme">Dark</div>
+          <div class="status-item status-hide-mobile" id="status-font-size">14px</div>
+          <div class="status-item status-hide-mobile">Spaces: 2</div>
+          <div class="status-item" id="status-lang">HTML</div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Modals -->
+    <!-- New File Modal -->
+    <div class="modal-overlay" id="modal-new-file">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">Create New File</h3>
+          <button class="modal-close" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="form-new-file">
+          <div class="modal-content">
+            <div class="form-group">
+              <label for="input-filename">File Name (e.g. script2.js, style2.css, helper.html)</label>
+              <input type="text" id="input-filename" class="form-control" placeholder="custom.js" required />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
+            <button type="submit" class="btn-primary">Create</button>
+          </div>
+        </form>
       </div>
     </div>
 
-    <footer class="footer">
-      <div class="footer-content">
-        <p>© 2026 Live Code Editor</p>
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="modal-settings">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">Editor Settings</h3>
+          <button class="modal-close" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="form-settings">
+          <div class="modal-content">
+            <div class="form-group">
+              <label for="setting-font-size">Font Size (px)</label>
+              <input type="number" id="setting-font-size" class="form-control" value="14" min="10" max="32" />
+            </div>
+            <div class="form-group">
+              <label for="setting-tab-size">Tab Size</label>
+              <select id="setting-tab-size" class="form-control">
+                <option value="2" selected>2 spaces</option>
+                <option value="4">4 spaces</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="setting-word-wrap">Word Wrap</label>
+              <select id="setting-word-wrap" class="form-control">
+                <option value="on" selected>On</option>
+                <option value="off">Off</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex-direction: row; align-items: center; justify-content: space-between; margin-top: 4px;">
+              <label for="setting-auto-run" style="margin: 0; cursor: pointer;">Live Auto-Run Preview</label>
+              <input type="checkbox" id="setting-auto-run" checked style="cursor: pointer;" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
+            <button type="submit" class="btn-primary">Save Settings</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-        <p class="made-by">
-          Made with <i class="fa-solid fa-heart"></i> by
-          <a href="https://neelsavsani.vercel.app" target="_blank"
-            >Neel Savsani</a
-          >
-        </p>
-
-        <div class="socials">
-          <a href="https://github.com/NeelSavsani"
-            ><i class="fa-brands fa-github"></i
-          ></a>
-          <a href="https://www.linkedin.com/in/neel-savsani"
-            ><i class="fa-brands fa-linkedin"></i
-          ></a>
-          <a href="mailto:neelsavsani7@gmail.com"
-            ><i class="fa-solid fa-envelope"></i
-          ></a>
+    <!-- Keyboard Shortcuts Modal -->
+    <div class="modal-overlay" id="modal-shortcuts">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">Keyboard Shortcuts</h3>
+          <button class="modal-close" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-content">
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-color);">
+            <span>Run Code</span>
+            <kbd style="background: var(--bg-input); padding: 2px 6px; border-radius: 4px; font-family: var(--font-code);">Ctrl + Enter</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-color);">
+            <span>Find in Code</span>
+            <kbd style="background: var(--bg-input); padding: 2px 6px; border-radius: 4px; font-family: var(--font-code);">Ctrl + F</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-color);">
+            <span>Replace in Code</span>
+            <kbd style="background: var(--bg-input); padding: 2px 6px; border-radius: 4px; font-family: var(--font-code);">Ctrl + H</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-color);">
+            <span>Format Code</span>
+            <kbd style="background: var(--bg-input); padding: 2px 6px; border-radius: 4px; font-family: var(--font-code);">Shift + Alt + F</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+            <span>Trigger Autocomplete / Snippet</span>
+            <kbd style="background: var(--bg-input); padding: 2px 6px; border-radius: 4px; font-family: var(--font-code);">Ctrl + Space</kbd>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-primary" data-modal-close>Got it</button>
         </div>
       </div>
-    </footer>
+    </div>
 
-    <script>
-      function run() {
-        const htmlCode = htmlEditor.getValue();
-        const cssCode = cssEditor.getValue();
-        const jsCode = jsEditor.getValue();
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
 
-        const output = document.getElementById("output");
-
-        output.contentDocument.open();
-        output.contentDocument.write(`
-    <html>
-      <head>
-        <style>${cssCode}</style>
-      </head>
-      <body>
-        ${htmlCode}
-        <script>
-          try {
-            ${jsCode}
-          } catch(e) {
-            console.error(e);
-          }
-        <\/script>
-      </body>
-    </html>
-  `);
-        output.contentDocument.close();
-      }
-
-      require.config({
-        paths: { vs: "https://unpkg.com/monaco-editor@latest/min/vs" },
-      });
-
-      require(["vs/editor/editor.main"], function () {
-        // ✅ HTML CONFIG (clean)
-        monaco.languages.html.htmlDefaults.setOptions({
-          format: {
-            tabSize: 2,
-            insertSpaces: true,
-          },
-          suggest: {
-            html5: true,
-          },
-        });
-
-        // 🔥 HTML EDITOR
-        window.htmlEditor = monaco.editor.create(
-          document.getElementById("html-editor"),
-          {
-            value: "<h1>Hello Editor 🚀</h1>",
-            language: "html",
-            theme: "vs-dark",
-            automaticLayout: true,
-
-            // 🔥 UX IMPROVEMENTS
-            quickSuggestions: true,
-            suggestOnTriggerCharacters: true,
-            tabCompletion: "on",
-          },
-        );
-
-        // CSS EDITOR
-        window.cssEditor = monaco.editor.create(
-          document.getElementById("css-editor"),
-          {
-            value: "body { background: black; color: white; }",
-            language: "css",
-            theme: "vs-dark",
-            automaticLayout: true,
-          },
-        );
-
-        // JS EDITOR
-        window.jsEditor = monaco.editor.create(
-          document.getElementById("js-editor"),
-          {
-            value: 'console.log("Hello World");',
-            language: "javascript",
-            theme: "vs-dark",
-            automaticLayout: true,
-          },
-        );
-
-        // 🔥 SNIPPETS (VS Code-like)
-        monaco.languages.registerCompletionItemProvider("html", {
-          provideCompletionItems: () => ({
-            suggestions: [
-              snippet("div", "<div>$1</div>"),
-              snippet("span", "<span>$1</span>"),
-              snippet("p", "<p>$1</p>"),
-              snippet("h1", "<h1>$1</h1>"),
-              snippet("h2", "<h2>$1</h2>"),
-              snippet("button", "<button>$1</button>"),
-
-              snippet("a", '<a href="$1">$2</a>'),
-              snippet("img", '<img src="$1" alt="$2">'),
-
-              snippet("ul", "<ul>\n\t<li>$1</li>\n</ul>"),
-              snippet("li", "<li>$1</li>"),
-
-              snippet("form", "<form>$1</form>"),
-              snippet("input", '<input type="$1" placeholder="$2">'),
-
-              snippet("section", "<section>$1</section>"),
-              snippet("header", "<header>$1</header>"),
-              snippet("footer", "<footer>$1</footer>"),
-            ],
-          }),
-        });
-
-        // helper function
-        function snippet(label, body) {
-          return {
-            label: label,
-            kind: monaco.languages.CompletionItemKind.Snippet,
-            insertText: body,
-            insertTextRules:
-              monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: label + " snippet",
-          };
-        }
-
-        // 🔥 LIVE AUTO RUN
-        htmlEditor.onDidChangeModelContent(run);
-        cssEditor.onDidChangeModelContent(run);
-        jsEditor.onDidChangeModelContent(run);
-
-        // 🔥 INITIAL RUN
-        run();
-      });
-
-      // 🔥 DRAG RESIZER
-      const divider = document.querySelector(".divider");
-      const left = document.querySelector(".left");
-
-      let isDragging = false;
-
-      divider.addEventListener("mousedown", () => {
-        isDragging = true;
-        document.body.style.cursor = "col-resize";
-      });
-
-      document.addEventListener("mousemove", (e) => {
-        if (!isDragging) return;
-
-        let newWidth = e.clientX;
-
-        // limits
-        if (newWidth < 250) newWidth = 250;
-        if (newWidth > window.innerWidth * 0.8)
-          newWidth = window.innerWidth * 0.8;
-
-        left.style.width = newWidth + "px";
-      });
-
-      document.addEventListener("mouseup", () => {
-        isDragging = false;
-        document.body.style.cursor = "default";
-      });
-    </script>
+    <!-- Main Application JavaScript -->
+    <script src="app.js"></script>
   </body>
 </html>
