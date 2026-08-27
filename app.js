@@ -103,12 +103,12 @@ const state = {
   files: JSON.parse(JSON.stringify(defaultFiles)),
   activeFile: 'index.html',
   currentPreviewHtml: 'index.html',
-  isExplorerOpen: true,
+  isExplorerOpen: false,
   editor: null,
   models: {},
   viewStates: {},
   theme: 'vs-dark', // 'vs-dark' or 'vs'
-  autoRun: true,
+  autoRun: false,
   fontSize: 14,
   tabSize: 2,
   wordWrap: 'on',
@@ -165,12 +165,9 @@ function initMonaco() {
     const uri = monaco.Uri.parse(`inmemory://workspace/${fileName}`);
     state.models[fileName] = monaco.editor.createModel(file.content, file.language, uri);
     
-    // Listen to changes for auto-run
+    // Listen to changes to keep file.content updated (without auto-running on keyup)
     state.models[fileName].onDidChangeContent(() => {
       file.content = state.models[fileName].getValue();
-      if (state.autoRun) {
-        debouncedRun();
-      }
     });
   });
 
@@ -463,7 +460,6 @@ function addNewFile(filename) {
   
   state.models[filename].onDidChangeContent(() => {
     state.files[filename].content = state.models[filename].getValue();
-    if (state.autoRun) debouncedRun();
   });
 
   renderTabs();
@@ -1176,7 +1172,17 @@ function resetToDefault() {
 function openModal(id) {
   closeAllModals();
   const modal = document.getElementById(id);
-  if (modal) modal.classList.add('show');
+  if (modal) {
+    modal.classList.add('show');
+    // Focus the input field (e.g. filename input)
+    setTimeout(() => {
+      const input = modal.querySelector('input, select, textarea');
+      if (input) {
+        input.focus();
+        if (input.select) input.select();
+      }
+    }, 60);
+  }
 }
 
 function closeAllModals() {

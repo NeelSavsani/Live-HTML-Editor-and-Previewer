@@ -1038,8 +1038,8 @@ html, body {
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  width: 440px;
-  max-width: 90vw;
+  width: 480px;
+  max-width: 92vw;
   overflow: hidden;
   animation: scaleUp 0.2s ease;
 }
@@ -1048,12 +1048,12 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 18px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border-color);
 }
 
 .modal-title {
-  font-size: 15px;
+  font-size: 16.5px;
   font-weight: 600;
   color: var(--text-bright);
 }
@@ -1062,14 +1062,15 @@ html, body {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
   border-radius: var(--radius-sm);
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.15s;
 }
 
 .modal-close:hover {
@@ -1078,74 +1079,82 @@ html, body {
 }
 
 .modal-content {
-  padding: 18px;
+  padding: 20px 22px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .form-group label {
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: #b8c0cc;
+  letter-spacing: -0.1px;
 }
 
 .form-control {
-  background: var(--bg-input);
-  border: 1px solid var(--border-color);
+  background: #121212;
+  border: 1px solid #333842;
   color: var(--text-bright);
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: 14.5px;
+  font-family: var(--font-code);
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .form-control:focus {
   border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .modal-footer {
-  padding: 12px 18px;
+  padding: 14px 20px;
   border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 10px;
 }
 
 .btn-secondary {
   background: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-main);
-  padding: 6px 14px;
+  padding: 8px 18px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 12.5px;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.15s;
 }
 
 .btn-secondary:hover {
   background: var(--bg-sidebar-hover);
+  color: var(--text-bright);
 }
 
 .btn-primary {
   background: var(--accent-blue);
   border: none;
   color: #fff;
-  padding: 6px 16px;
+  padding: 8px 22px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 12.5px;
-  font-weight: 500;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.15s;
 }
 
 .btn-primary:hover {
-  opacity: 0.9;
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
 /* ==========================================================================
