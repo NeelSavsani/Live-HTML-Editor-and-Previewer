@@ -147,11 +147,11 @@ html, body {
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   text-decoration: none;
   color: var(--text-bright);
   font-weight: 700;
-  font-size: 17px;
+  font-size: 18px;
   letter-spacing: -0.3px;
   transition: opacity 0.2s;
 }
@@ -161,11 +161,10 @@ html, body {
 }
 
 .brand-logo-img {
-  height: 28px;
+  height: 36px;
   width: auto;
-  max-width: 32px;
+  max-width: 42px;
   object-fit: contain;
-  border-radius: var(--radius-sm);
   display: block;
 }
 
